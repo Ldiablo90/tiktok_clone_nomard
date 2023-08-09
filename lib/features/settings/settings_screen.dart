@@ -2,30 +2,31 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:provider/provider.dart';
 import 'package:tiktok_clone/common/widgets/video_config/video_config.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/voides/view_models/playback_config_vm.dart';
 
-class SettingsScreen extends StatefulWidget {
+// class SettingsScreen extends StatefulHookConsumerWidget {
+//   const SettingsScreen({super.key});
+
+//   @override
+//   ConsumerState<ConsumerStatefulWidget> createState() => _SettingsScreenState();
+// }
+// class _SettingsScreenState extends ConsumerState<SettingsScreen> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container();
+//   }
+// }
+
+class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
+  // bool _notifications = false;
   @override
-  State<SettingsScreen> createState() => _SettingsScreenState();
-}
-
-class _SettingsScreenState extends State<SettingsScreen> {
-  bool _notifications = false;
-
-  void _onNotificationsChanged(bool? newValue) {
-    if (newValue == null) return;
-    setState(() {
-      _notifications = newValue;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Settings'),
@@ -80,8 +81,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           //
           // ###################### Riverpod 방식
           SwitchListTile.adaptive(
-            value: false,
-            onChanged: (value) {},
+            value: ref.watch(playbackConfigProvider).muted,
+            onChanged: ref.read(playbackConfigProvider.notifier).setMuted,
             // onChanged: _onNotificationsChanged,
             // value: VideoConfigData.of(context).autuMute,
             // onChanged: (_) {
@@ -91,8 +92,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
             subtitle: const Text("Videos will be muted by default."),
           ),
           SwitchListTile.adaptive(
-            value: false,
-            onChanged: (value) {},
+            value: ref.watch(playbackConfigProvider).autoplay,
+            onChanged: ref.read(playbackConfigProvider.notifier).setAutoplay,
             // onChanged: _onNotificationsChanged,
             // value: VideoConfigData.of(context).autuMute,
             // onChanged: (_) {
@@ -132,8 +133,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           // ###################### Provider 방식 끝
           CheckboxListTile(
             activeColor: Colors.black,
-            value: _notifications,
-            onChanged: _onNotificationsChanged,
+            value: false,
+            onChanged: (_) {},
             title: const Text("Enable notifications"),
             subtitle: const Text("We won't spam you."),
           ),
@@ -145,12 +146,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 firstDate: DateTime(1980),
                 lastDate: DateTime(2030),
               );
-              print(date);
               final time = await showTimePicker(
                 context: context,
                 initialTime: TimeOfDay.now(),
               );
-              print(time);
               final booking = await showDateRangePicker(
                 context: context,
                 firstDate: DateTime(1980),

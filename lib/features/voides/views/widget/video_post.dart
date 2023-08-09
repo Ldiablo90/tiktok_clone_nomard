@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:provider/provider.dart';
 import 'package:tiktok_clone/common/widgets/video_config/video_config.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
@@ -12,7 +13,7 @@ import 'package:tiktok_clone/features/voides/views/widget/video_comments.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
-class VideoPost extends StatefulWidget {
+class VideoPost extends ConsumerStatefulWidget {
   VideoPost({
     super.key,
     required this.onVideoFinished,
@@ -21,10 +22,10 @@ class VideoPost extends StatefulWidget {
   final Function onVideoFinished;
   final int index;
   @override
-  State<VideoPost> createState() => _VideoPostState();
+  ConsumerState<VideoPost> createState() => _VideoPostState();
 }
 
-class _VideoPostState extends State<VideoPost>
+class _VideoPostState extends ConsumerState<VideoPost>
     with SingleTickerProviderStateMixin {
   late VideoPlayerController _videoController;
   final _aniDuration = const Duration(milliseconds: 200);
@@ -65,7 +66,7 @@ class _VideoPostState extends State<VideoPost>
       final autoplay = false;
       // Provider 방식
       // final autoplay = context.read<PlaybackConfigViewModel>().autoplay;
-      if (autoplay) {
+      if (ref.read(playbackConfigProvider).autoplay) {
         _videoController.play();
       } else {
         _isPaused = !_isPaused;
@@ -136,6 +137,7 @@ class _VideoPostState extends State<VideoPost>
     if (!mounted) return;
     // Provider 방식
     // _isMuted = context.read<PlaybackConfigViewModel>().muted;
+    _isMuted = ref.read(playbackConfigProvider).muted;
     _videoController.setVolume(_isMuted ? 0 : 1);
   }
 
