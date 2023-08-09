@@ -2,7 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import 'package:tiktok_clone/common/widgets/video_config/video_config.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
+import 'package:tiktok_clone/features/voides/view_models/playback_config_vm.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -55,11 +58,50 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           ),
           AboutListTile(),
+          // ValueListenableBuilder(
+          //   valueListenable: videoConfig,
+          //   builder: (context, value, child) => SwitchListTile.adaptive(
+          //     // value: videoConfig.autoMute,
+          //     value: value,
+          //     onChanged: (_) {
+          //       videoConfig.value = !videoConfig.value;
+          //     },
+          //     // onChanged: (_) {
+          //     //   videoConfig.toggleAutoMute();
+          //     // },
+          //     // value: VideoConfigData.of(context).autuMute,
+          //     // onChanged: (_) {
+          //     //   VideoConfigData.of(context).toggleMute();
+          //     // },
+          //     title: const Text("Auto Mute"),
+          //     subtitle: const Text("Videos will be muted by default."),
+          //   ),
+          // ),
           SwitchListTile.adaptive(
-            value: _notifications,
-            onChanged: _onNotificationsChanged,
-            title: const Text("Enable notifications"),
-            subtitle: const Text("They will be cute."),
+            value: context.watch<PlaybackConfigViewModel>().muted,
+            onChanged: (value) {
+              context.read<PlaybackConfigViewModel>().setMuted(value);
+            },
+            // onChanged: _onNotificationsChanged,
+            // value: VideoConfigData.of(context).autuMute,
+            // onChanged: (_) {
+            //   VideoConfigData.of(context).toggleMute();
+            // },
+            title: const Text("Auto Mute"),
+            subtitle: const Text("Videos will be muted by default."),
+          ),
+          SwitchListTile.adaptive(
+            value: context.watch<PlaybackConfigViewModel>().autoplay,
+            onChanged: (value) {
+              context.read<PlaybackConfigViewModel>().setAutoplay(value);
+            },
+            // onChanged: _onNotificationsChanged,
+            // value: VideoConfigData.of(context).autuMute,
+            // onChanged: (_) {
+            //   VideoConfigData.of(context).toggleMute();
+            // },
+            title: const Text("Auto Play"),
+            subtitle: const Text("Videos will start playing automatically."),
           ),
           CheckboxListTile(
             activeColor: Colors.black,

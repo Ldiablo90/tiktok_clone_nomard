@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
+import 'package:tiktok_clone/features/settings/settings_screen.dart';
 import 'package:tiktok_clone/features/userprofile/widget/persistent_tab_bar.dart';
 
 class UserProfileScreen extends StatefulWidget {
@@ -14,7 +15,12 @@ class UserProfileScreen extends StatefulWidget {
 
 class _UserProfileScreenState extends State<UserProfileScreen> {
   void onGearTab() {
-    context.pushNamed("settings");
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SettingsScreen(),
+      ),
+    );
   }
 
   @override

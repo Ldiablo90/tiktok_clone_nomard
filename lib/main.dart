@@ -1,15 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tiktok_clone/common/widgets/video_config/video_config.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
+import 'package:tiktok_clone/features/voides/models/playback_config_model.dart';
+import 'package:tiktok_clone/features/voides/repos/video_playback_config_repo.dart';
+import 'package:tiktok_clone/features/voides/view_models/playback_config_vm.dart';
 import 'package:tiktok_clone/router.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
-  runApp(const TikTokCloneApp());
+  final preferences = await SharedPreferences.getInstance();
+
+  final repository = VideoPlaybackConfigRepository(preferences);
+
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => PlaybackConfigViewModel(repository),
+        ),
+      ],
+      child: const TikTokCloneApp(),
+    ),
+  );
 }
 
 class TikTokCloneApp extends StatelessWidget {

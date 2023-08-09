@@ -2,10 +2,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import 'package:tiktok_clone/common/widgets/video_config/video_config.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
-import 'package:tiktok_clone/features/voides/widget/video_button.dart';
-import 'package:tiktok_clone/features/voides/widget/video_comments.dart';
+import 'package:tiktok_clone/features/voides/view_models/playback_config_vm.dart';
+import 'package:tiktok_clone/features/voides/views/widget/video_button.dart';
+import 'package:tiktok_clone/features/voides/views/widget/video_comments.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
@@ -27,7 +30,10 @@ class _VideoPostState extends State<VideoPost>
   final _aniDuration = const Duration(milliseconds: 200);
 
   late final AnimationController _animationController;
+
   bool _isPaused = false;
+
+  bool _isMuted = false;
 
   void _initVideoPlayer() async {
     _videoController =
@@ -37,8 +43,9 @@ class _VideoPostState extends State<VideoPost>
     if (kIsWeb) {
       await _videoController.setVolume(0);
     }
-    setState(() {});
+
     _videoController.addListener(_onVideoChange);
+    setState(() {});
   }
 
   void _onVideoChange() {
@@ -51,14 +58,25 @@ class _VideoPostState extends State<VideoPost>
   }
 
   void _onVisibilityChanged(VisibilityInfo info) {
-    print("_onVisibilityChanged");
-    if (info.visibleFraction == 1 && !_videoController.value.isPlaying) {
-      print("_onVisibilityChanged : play");
-      _videoController.play();
+    if (!mounted) return;
+    if (info.visibleFraction == 1 &&
+        !_isPaused &&
+        !_videoController.value.isPlaying) {
+      final autoplay = context.read<PlaybackConfigViewModel>().autoplay;
+      if (autoplay) {
+        _videoController.play();
+      } else {
+        _isPaused = !_isPaused;
+      }
+      setState(() {});
+    }
+    if (_videoController.value.isPlaying && info.visibleFraction == 0) {
+      _onTogglePause();
     }
   }
 
   void _onTogglePause() {
+    print(_videoController.value.isPlaying);
     if (_videoController.value.isPlaying) {
       _videoController.pause();
       _animationController.reverse();
@@ -72,7 +90,6 @@ class _VideoPostState extends State<VideoPost>
   }
 
   void _onCommentsTap() async {
-    print("_onCommentsTap");
     _videoController.value.isPlaying ? _onTogglePause() : null;
     // context.push("/videotimelinescreen/comments");
     await showModalBottomSheet(
@@ -95,10 +112,26 @@ class _VideoPostState extends State<VideoPost>
       vsync: this,
       lowerBound: 1,
       upperBound: 1.5,
-      value: 1.5,
+      value: 1,
       duration: _aniDuration,
     );
-    print("intistate");
+    _onPlaybackConfigchanged();
+    context
+        .read<PlaybackConfigViewModel>()
+        .addListener(_onPlaybackConfigchanged);
+  }
+
+  void setMuted() {
+    _isMuted = !_isMuted;
+    _videoController.setVolume(_isMuted ? 0 : 1);
+    setState(() {});
+  }
+
+  void _onPlaybackConfigchanged() {
+    print("_onPlaybackConfigchanged");
+    if (!mounted) return;
+    _isMuted = context.read<PlaybackConfigViewModel>().muted;
+    _videoController.setVolume(_isMuted ? 0 : 1);
   }
 
   @override
@@ -108,6 +141,7 @@ class _VideoPostState extends State<VideoPost>
   void dispose() {
     // TODO: implement dispose
     _videoController.dispose();
+    _animationController.dispose();
     super.dispose();
   }
 
@@ -150,6 +184,22 @@ class _VideoPostState extends State<VideoPost>
                     ),
                   ),
                 ),
+              ),
+            ),
+          ),
+          Positioned(
+            top: 40,
+            left: 20,
+            child: IconButton(
+              onPressed: () {
+                setMuted();
+              },
+              icon: FaIcon(
+                // VideoConfigData.of(context).autuMute
+                _isMuted
+                    ? FontAwesomeIcons.volumeOff
+                    : FontAwesomeIcons.volumeHigh,
+                color: Colors.white,
               ),
             ),
           ),

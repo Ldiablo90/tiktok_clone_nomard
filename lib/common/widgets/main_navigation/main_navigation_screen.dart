@@ -4,13 +4,13 @@ import 'package:go_router/go_router.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/discover/discover_screen.dart';
 import 'package:tiktok_clone/features/inbox.dart/inbox_screen.dart';
-import 'package:tiktok_clone/features/main_navigation/widgets/main_navigation_destination.dart';
+import 'package:tiktok_clone/common/widgets/main_navigation/widgets/main_navigation_destination.dart';
 import 'package:tiktok_clone/features/onboarding/hoem_screen.dart';
 import 'package:tiktok_clone/features/onboarding/search_screen.dart';
 import 'package:tiktok_clone/features/userprofile/user_profile_screen.dart';
-import 'package:tiktok_clone/features/voides/video_recording_screen.dart';
-import 'package:tiktok_clone/features/voides/video_timeline_screen.dart';
 import 'package:tiktok_clone/features/onboarding/widgets/post_video_button.dart';
+import 'package:tiktok_clone/features/voides/views/video_recording_screen.dart';
+import 'package:tiktok_clone/features/voides/views/video_timeline_screen.dart';
 
 class MainNavigationScreen extends StatefulWidget {
   MainNavigationScreen({

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tiktok_clone/features/settings/settings_screen.dart';
 import 'package:tiktok_clone/features/userprofile/user_profile_screen.dart';
-import 'package:tiktok_clone/features/voides/video_recording_screen.dart';
+import 'package:tiktok_clone/features/voides/views/video_recording_screen.dart';
 import 'package:tiktok_clone/page/dialog_page.dart';
 import 'package:tiktok_clone/features/authentication/birthday_screen.dart';
 import 'package:tiktok_clone/features/authentication/email_screen.dart';
@@ -17,19 +17,17 @@ import 'package:tiktok_clone/features/inbox.dart/activity_screen.dart';
 import 'package:tiktok_clone/features/inbox.dart/chat_detail_screen.dart';
 import 'package:tiktok_clone/features/inbox.dart/chats_screen.dart';
 import 'package:tiktok_clone/features/inbox.dart/inbox_screen.dart';
-import 'package:tiktok_clone/features/main_navigation/main_navigation_screen.dart';
+import 'package:tiktok_clone/common/widgets/main_navigation/main_navigation_screen.dart';
 import 'package:tiktok_clone/features/onboarding/interests_screen.dart';
 import 'package:tiktok_clone/features/onboarding/tutorial_screen.dart';
 import 'package:tiktok_clone/features/onboarding/video_add_screen.dart';
-import 'package:tiktok_clone/features/voides/video_timeline_screen.dart';
-import 'package:tiktok_clone/features/voides/widget/video_comments.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
 
 final routerProvider = GoRouter(
   navigatorKey: _rootNavigatorKey,
-  initialLocation: '/inbox',
+  initialLocation: '/home',
   routes: <RouteBase>[
     GoRoute(
       name: SignUpScreen.routerName,
