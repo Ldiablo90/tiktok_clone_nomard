@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tiktok_clone/common/widgets/video_config/video_config.dart';
@@ -19,16 +20,27 @@ Future<void> main() async {
 
   final repository = VideoPlaybackConfigRepository(preferences);
 
+  // riverpod 방식
   runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (context) => PlaybackConfigViewModel(repository),
-        ),
+    ProviderScope(
+      overrides: [
+        playbackConfigProvider
+            .overrideWith(() => PlaybackConfigViewModel(repository))
       ],
-      child: const TikTokCloneApp(),
+      child: TikTokCloneApp(),
     ),
   );
+  // Provider 방식
+  // runApp(
+  //   MultiProvider(
+  //     providers: [
+  //       ChangeNotifierProvider(
+  //         create: (context) => PlaybackConfigViewModel(repository),
+  //       ),
+  //     ],
+  //     child: const TikTokCloneApp(),
+  //   ),
+  // );
 }
 
 class TikTokCloneApp extends StatelessWidget {

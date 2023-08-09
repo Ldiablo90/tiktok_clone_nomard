@@ -62,7 +62,9 @@ class _VideoPostState extends State<VideoPost>
     if (info.visibleFraction == 1 &&
         !_isPaused &&
         !_videoController.value.isPlaying) {
-      final autoplay = context.read<PlaybackConfigViewModel>().autoplay;
+      final autoplay = false;
+      // Provider 방식
+      // final autoplay = context.read<PlaybackConfigViewModel>().autoplay;
       if (autoplay) {
         _videoController.play();
       } else {
@@ -92,6 +94,7 @@ class _VideoPostState extends State<VideoPost>
   void _onCommentsTap() async {
     _videoController.value.isPlaying ? _onTogglePause() : null;
     // context.push("/videotimelinescreen/comments");
+
     await showModalBottomSheet(
       context: context,
       useRootNavigator: true,
@@ -116,9 +119,10 @@ class _VideoPostState extends State<VideoPost>
       duration: _aniDuration,
     );
     _onPlaybackConfigchanged();
-    context
-        .read<PlaybackConfigViewModel>()
-        .addListener(_onPlaybackConfigchanged);
+    // Provider 방식
+    // context
+    //     .read<PlaybackConfigViewModel>()
+    //     .addListener(_onPlaybackConfigchanged);
   }
 
   void setMuted() {
@@ -130,7 +134,8 @@ class _VideoPostState extends State<VideoPost>
   void _onPlaybackConfigchanged() {
     print("_onPlaybackConfigchanged");
     if (!mounted) return;
-    _isMuted = context.read<PlaybackConfigViewModel>().muted;
+    // Provider 방식
+    // _isMuted = context.read<PlaybackConfigViewModel>().muted;
     _videoController.setVolume(_isMuted ? 0 : 1);
   }
 
@@ -235,7 +240,6 @@ class _VideoPostState extends State<VideoPost>
                 Gaps.v24,
                 GestureDetector(
                   onTap: _onCommentsTap,
-                  // onTap: () => context.go("/videotimelinescreen/comments"),
                   child: VideoButton(
                     icon: FontAwesomeIcons.solidComment,
                     text: "33K",
